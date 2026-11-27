@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../models/category.dart';
+import '../models/meal.dart';
 import '../services/meal_api.dart';
 import 'meal_list_screen.dart';
+import 'meal_detail_screen.dart';
 import 'about_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,6 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   late Future<List<Category>> _categoriesFuture;
 
+  bool _loadingRandom = false;
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +33,42 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<void> openRandomMeal() async {
+    setState(() {
+      _loadingRandom = true;
+    });
+
+    Meal meal;
+
+    try {
+      meal = await _api.fetchRandomMeal();
+    } catch (_) {
+      if (!mounted) return;
+
+      setState(() {
+        _loadingRandom = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Could not load a random meal. Please try again.'),
+        ),
+      );
+      return;
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _loadingRandom = false;
+    });
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MealDetailScreen(meal: meal)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,6 +76,17 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Recipe Explorer'),
         centerTitle: true,
         actions: [
+          IconButton(
+            tooltip: 'Random Meal',
+            onPressed: _loadingRandom ? null : openRandomMeal,
+            icon: _loadingRandom
+                ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.shuffle),
+          ),
           IconButton(
             icon: const Icon(Icons.info_outline),
             tooltip: 'About',
