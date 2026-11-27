@@ -18,7 +18,7 @@ Recipe Explorer is a Flutter app where users can find and explore different food
 
 ## Tools and Technologies
 
-- - Flutter 3.47.5 • channel stable
+- Flutter 3.47.5 • channel stable
 - Dart 3.13.4
 - TheMealDB API
 - HTTP package
