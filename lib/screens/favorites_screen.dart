@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/meal.dart';
 import '../services/favorites_storage.dart';
+import '../widgets/meal_card.dart';
 import 'meal_detail_screen.dart';
 
 class FavoritesScreen extends StatefulWidget {
@@ -77,25 +78,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             itemBuilder: (context, index) {
               final meal = meals[index];
 
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                child: ListTile(
-                  leading: Image.network(
-                    meal.imageUrl,
-                    width: 80,
-                    height: 70,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const SizedBox(
-                        width: 80,
-                        child: Icon(Icons.restaurant),
-                      );
-                    },
-                  ),
-                  title: Text(meal.name),
-                  trailing: const Icon(Icons.favorite, color: Colors.red),
-                  onTap: () => openMeal(meal),
-                ),
+              return MealCard(
+                meal: meal,
+                trailing: const Icon(Icons.favorite, color: Colors.red),
+                onTap: () => openMeal(meal),
               );
             },
           );

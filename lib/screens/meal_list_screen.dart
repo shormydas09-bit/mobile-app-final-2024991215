@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/category.dart';
 import '../models/meal.dart';
 import '../services/meal_api.dart';
+import '../widgets/meal_card.dart';
 import 'meal_detail_screen.dart';
 
 class MealListScreen extends StatefulWidget {
@@ -66,32 +67,16 @@ class _MealListScreenState extends State<MealListScreen> {
             itemBuilder: (context, index) {
               final meal = meals[index];
 
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                child: ListTile(
-                  leading: Image.network(
-                    meal.imageUrl,
-                    width: 80,
-                    height: 70,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const SizedBox(
-                        width: 80,
-                        child: Icon(Icons.restaurant),
-                      );
-                    },
-                  ),
-                  title: Text(meal.name),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MealDetailScreen(meal: meal),
-                      ),
-                    );
-                  },
-                ),
+              return MealCard(
+                meal: meal,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MealDetailScreen(meal: meal),
+                    ),
+                  );
+                },
               );
             },
           );
