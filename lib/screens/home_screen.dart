@@ -27,12 +27,14 @@ class _HomeScreenState extends State<HomeScreen> {
     _categoriesFuture = _api.fetchCategories();
   }
 
+  // Retry loading categories
   void retry() {
     setState(() {
       _categoriesFuture = _api.fetchCategories();
     });
   }
 
+  // Load and open a random meal
   Future<void> openRandomMeal() async {
     setState(() {
       _loadingRandom = true;
@@ -54,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
           content: Text('Could not load a random meal. Please try again.'),
         ),
       );
+
       return;
     }
 
@@ -76,6 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Recipe Explorer'),
         centerTitle: true,
         actions: [
+          // Random Meal button
           IconButton(
             tooltip: 'Random Meal',
             onPressed: _loadingRandom ? null : openRandomMeal,
@@ -87,6 +91,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 : const Icon(Icons.shuffle),
           ),
+
+          // About button
           IconButton(
             icon: const Icon(Icons.info_outline),
             tooltip: 'About',
@@ -99,13 +105,17 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+
+      // Load categories
       body: FutureBuilder<List<Category>>(
         future: _categoriesFuture,
         builder: (context, snapshot) {
+          // Loading state
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
+          // Error state
           if (snapshot.hasError) {
             return Center(
               child: Column(
@@ -121,10 +131,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
           final categories = snapshot.data ?? [];
 
+          // Empty state
           if (categories.isEmpty) {
             return const Center(child: Text('No categories found.'));
           }
 
+          // Display categories in grid
           return GridView.builder(
             padding: const EdgeInsets.all(12),
             itemCount: categories.length,
